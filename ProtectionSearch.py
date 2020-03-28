@@ -5,7 +5,6 @@ import re
 import platform
 import zipfile
 import sys
-from zipmgr import zipmgr
 import getopt
 import constant
 
@@ -59,7 +58,6 @@ class ApkProtection:
         if 'Windows' in platform.system():
             xml_cmd = "%s d xmltree \"%s\" AndroidManifest.xml " % (
                 self.aapt_path, self.apk_path)
-            # xml_cmd = "%s%saapt.exe d xmltree \"%s\" AndroidManifest.xml "%(self.aapt_path,os.sep, self.apk_path)
 
         if 'Linux' in platform.system():
             xml_cmd = "%s d xmltree %s AndroidManifest.xml " % (
@@ -69,7 +67,6 @@ class ApkProtection:
             strxml = os.popen(xml_cmd)
             self.xmltree = strxml.read()
         except Exception as e:
-            # print "aapt Mainfestxml error"
             self.lastError = 'aapt get AndroidManifest.xml error'
             return False
         return True
@@ -80,7 +77,7 @@ class ApkProtection:
             result = value.search(self.xmltree)
             if result:
                 return key
-            return constant.NOWRAPPER
+        return constant.NOWRAPPER
 
 
     # 获取APK的加壳厂商
@@ -97,20 +94,9 @@ class ApkProtection:
                     result = value.search(fileName)
                     if result:
                         so_result = key
-                        # print(fileName)
                         find = True
                         break
-                    # for key in range(len(self.soName)):
-                    #     result = self.soName_regex[key].search(fileName)
-                    #     if result:
-                    #         if key == 9:  # 如果是网易加固壳，则获取出加固的版本号
-                    #             self.is_netease_protect = True
-                    #         self.wrapperSdk = self.protectflag_dict[key + 1]
-                    #         find = True
-                    #         break
         except Exception as e:
-            # print "parser wrap sdk error: "
-            # logging.error(e)
             self.lastError = 'parser wrap lib error'
             return False
         if find:
@@ -203,35 +189,3 @@ def usage():
 
 if __name__ == "__main__":
     main(sys.argv[1:])
-    # 初始化地址
-    # if len(sys.argv) != 4:
-    #     print(u"输入的参数不正常")
-    # else:
-    #     dit = {'apkPath': '', 'aaptPath': ''}
-    #     dit['apkPath'] = str(sys.argv[1])
-    #     dit['aaptPath'] = str(sys.argv[2])
-    #     flag = str(sys.argv[3])
-
-    #     ad = ApkDetect(dit)
-    #     if flag == '1':  # 表示获取图标
-    #         ad.saveIcon()
-    #     else:  # 查壳
-    #         dit_result = ad.result()
-
-    #         if len(dit_result) != 3:
-    #             print(u"解析加壳sdk失败")
-    #         else:
-    #             if dit_result['wrapperSdk'] == 'Failed':
-    #                 print(dit_result['lastError'])
-    #             else:
-    #                 print(dit_result['wrapperSdk'])
-    #                 if dit_result['bugrptID'] != '':
-    #                     print(dit_result['bugrptID'])
-
-    #             # gameDetect = GameApkDetect(dit['apkPath'])
-    #             # dits = gameDetect.getResult()
-    #             #
-    #             # if dits['isu3d']:
-    #             #     print u' U3d脚本已经加密' if dits['issafe'] else u' U3d脚本未加密'
-    #             # else:
-    #             print('')
